@@ -1,44 +1,22 @@
-import NextLogo from "./next-logo";
-import SupabaseLogo from "./supabase-logo";
+import React from "react";
+import { FlipWords } from "./ui/flip-words";
 
-export default function Header() {
+export default function Hero() {
+  const words = ["is simple", "helps", "is yours", "works"];
+
   return (
-    <div className="flex flex-col gap-16 items-center">
-      <div className="flex gap-8 justify-center items-center">
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <SupabaseLogo />
-        </a>
-        <span className="border-l rotate-45 h-6" />
-        <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <NextLogo />
-        </a>
+    <div className="h-[40rem] flex justify-center items-center px-4">
+      <div className="flex flex-col">
+      <div className="text-4xl mx-auto font-normal text-neutral-600 dark:text-neutral-400">
+        A todo app that
+        <FlipWords words={words} /> <br />
       </div>
-      <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-      <p className="text-3xl lg:text-4xl !leading-tight mx-auto max-w-xl text-center">
-        The fastest way to build apps with{" "}
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Supabase
-        </a>{" "}
-        and{" "}
-        <a
-          href="https://nextjs.org/"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Next.js
-        </a>
-      </p>
-      <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
+      <a href="sign-up">
+      <button className="mt-5 px-4 py-2 hover:bg-muted-foreground rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200">
+  Start now
+</button>
+</a>
+</div>
     </div>
   );
 }
