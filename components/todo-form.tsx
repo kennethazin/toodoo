@@ -2,18 +2,18 @@
 import { addTodo } from "@/app/todos/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import { useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { TodoOptimisticUpdate } from "./todo-list";
 import { Todo } from "@/types/custom";
-import {Input} from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 
 function FormContent() {
   const { pending } = useFormStatus();
   return (
     <>
+
       <Input
         disabled={pending}
         minLength={4}
@@ -48,6 +48,7 @@ export function TodoForm({
               inserted_at: "",
               user_id: "",
               task: data.get("todo") as string,
+              description: data.get("description") as string,
               is_complete: false,
             };
             optimisticUpdate({ action: "create", todo: newTodo });

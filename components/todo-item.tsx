@@ -1,14 +1,25 @@
 "use client";
 import { deleteTodo, updateTodo } from "@/app/todos/actions";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
 import { Todo } from "@/types/custom";
-import { Trash2 } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { TodoOptimisticUpdate } from "./todo-list";
 import { useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export function TodoItem({
   todo,
@@ -34,33 +45,58 @@ export function TodoCard({
   const { pending } = useFormStatus();
   const [checked, setChecked] = useState(todo.is_complete);
   return (
-    <Card className={cn("w-full", pending && "opacity-50")}>
-      <CardContent className="flex items-start gap-3 p-2">
-        <span className="size-10 flex items-center justify-center">
-          <Checkbox
-            disabled={pending}
-            checked={Boolean(checked)}
-            onCheckedChange={async (val) => {
-              if (val === "indeterminate") return;
-              setChecked(val);
-              await updateTodo({ ...todo, is_complete: val });
-            }}
-          />
-        </span>
-        <p className={cn("flex-1 pt-2 min-w-0 break-words")}>{todo.task}</p>
-        <Button
-          disabled={pending}
-          formAction={async (data) => {
-            optimisticUpdate({ action: "delete", todo });
-            await deleteTodo(todo.id);
-          }}
-          variant="ghost"
-          size="icon"
-        >
-          <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete Todo</span>
-        </Button>
-      </CardContent>
-    </Card>
+    <>
+      <ContextMenu>
+        <div className="flex  items-center ">
+          <ContextMenuTrigger className="w-full">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <div className="w-full ">
+                <span className="size-5  mr-5">
+                  <Checkbox
+                    disabled={pending}
+                    checked={Boolean(checked)}
+                    onCheckedChange={async (val) => {
+                      if (val === "indeterminate") return;
+                      setChecked(val);
+                      await updateTodo({ ...todo, is_complete: val });
+                    }}
+                  />
+                </span>
+                </div>
+                <AccordionTrigger className="w-full">{todo.task}</AccordionTrigger>
+                <AccordionContent className="">
+                  {todo.description ? (
+                    todo.description
+                  ) : (
+                    <span>
+                      <Textarea
+                        placeholder="Add a description"
+                        className="border-none outline-none "
+                      />
+                    </span>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            <ContextMenuContent className="w-64">
+              <ContextMenuItem>
+                <Button
+                  onClick={async () => {
+                    optimisticUpdate({ action: "delete", todo });
+                    await deleteTodo(todo.id);
+                  }}
+                  variant="ghost"
+                  size="context"
+                >
+                  <TrashIcon className="w-4 h-4 mr-2 stroke-muted-foreground" />{" "}
+                  Delete
+                </Button>
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenuTrigger>
+        </div>
+      </ContextMenu>
+    </>
   );
 }

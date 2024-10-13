@@ -7,10 +7,36 @@ export type Json =
   | Json[]
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       todos: {
         Row: {
+          description: string | null
           id: number
           inserted_at: string
           is_complete: boolean | null
@@ -18,6 +44,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          description?: string | null
           id?: number
           inserted_at?: string
           is_complete?: boolean | null
@@ -25,6 +52,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          description?: string | null
           id?: number
           inserted_at?: string
           is_complete?: boolean | null

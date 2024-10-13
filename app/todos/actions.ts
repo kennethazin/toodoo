@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 export async function addTodo(formData: FormData) {
     const supabase = createClient();
     const text = formData.get("todo") as string | null
+    const descriptionText = formData.get("description") as string | null
+
 
     if (!text) {
         throw new Error("Text is required")
@@ -20,6 +22,7 @@ export async function addTodo(formData: FormData) {
 
     const { error } = await supabase.from("todos").insert({
         task: text,
+        description: descriptionText,
         user_id: user.id
     })
 
