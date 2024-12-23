@@ -20,6 +20,8 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { Input } from "@/components/ui/input";
+import { Send } from "lucide-react";
 
 export function TodoItem({
   todo,
@@ -44,36 +46,55 @@ export function TodoCard({
 }) {
   const { pending } = useFormStatus();
   const [checked, setChecked] = useState(todo.is_complete);
+  const [description, setDescription] = useState(todo.description || "");
+
   return (
     <>
       <ContextMenu>
-        <div className="flex  items-center ">
+        <div className="flex items-center">
           <ContextMenuTrigger className="w-full">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
-                <div className="w-full ">
-                <span className="size-5  mr-5">
-                  <Checkbox
-                    disabled={pending}
-                    checked={Boolean(checked)}
-                    onCheckedChange={async (val) => {
-                      if (val === "indeterminate") return;
-                      setChecked(val);
-                      await updateTodo({ ...todo, is_complete: val });
-                    }}
-                  />
-                </span>
+                <div className="flex items-center w-full">
+                  <span className="mr-5">
+                    <Checkbox
+                      disabled={pending}
+                      checked={Boolean(checked)}
+                      onCheckedChange={async (val) => {
+                        if (val === "indeterminate") return;
+                        setChecked(val);
+                        await updateTodo({ ...todo, is_complete: val });
+                      }}
+                    />
+                  </span>
+                  <AccordionTrigger className="w-full">
+                    {todo.task}
+                  </AccordionTrigger>
                 </div>
-                <AccordionTrigger className="w-full">{todo.task}</AccordionTrigger>
                 <AccordionContent className="">
                   {todo.description ? (
                     todo.description
                   ) : (
                     <span>
-                      <Textarea
+                      <Input
+                        className="border-none outline-none"
+                        name="description"
                         placeholder="Add a description"
-                        className="border-none outline-none "
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                       />
+                      <Button
+                        onClick={async () => {
+                          const updatedTodo = { ...todo, description };
+                          optimisticUpdate({ action: "update", todo: updatedTodo });
+                          await updateTodo(updatedTodo);
+                        }}
+                        variant="ghost"
+                        size="context"
+                      >
+                        <Send className="h-3 w-3" />
+                        <span className="sr-only">Submit Todo</span>
+                      </Button>
                     </span>
                   )}
                 </AccordionContent>

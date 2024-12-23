@@ -13,15 +13,15 @@ function FormContent() {
   const { pending } = useFormStatus();
   return (
     <>
-
       <Input
         disabled={pending}
         minLength={4}
         name="todo"
         required
-        placeholder="Add a new toodoo"
+        placeholder="Add a new todo"
         className="border-none outline-none"
       />
+      <Input  className="border-none outline-none" name="description" placeholder="Add a description" />
       <Button type="submit" size="icon" className="min-w-10" disabled={pending}>
         <Send className="h-3 w-3" />
         <span className="sr-only">Submit Todo</span>
@@ -43,12 +43,16 @@ export function TodoForm({
           ref={formRef}
           className="flex gap-4"
           action={async (data) => {
+            const task = data.get("todo") as string;
+            const description = data.get("description") as string || "Default description";
+            console.log("Form data:", { task, description });
+
             const newTodo: Todo = {
               id: -1,
               inserted_at: "",
               user_id: "",
-              task: data.get("todo") as string,
-              description: data.get("description") as string,
+              task,
+              description,
               is_complete: false,
             };
             optimisticUpdate({ action: "create", todo: newTodo });
