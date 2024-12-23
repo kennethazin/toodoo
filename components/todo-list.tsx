@@ -30,7 +30,7 @@ export function todoReducer(
     case "update":
       return state.map((t) => (t.id === todo.id ? todo : t));
     case "create":
-      return [todo, ...state];
+      return todo.is_complete ? [...state, todo] : [todo, ...state];
     default:
       return state;
   }

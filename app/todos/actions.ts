@@ -11,6 +11,7 @@ export async function addTodo(formData: FormData) {
     const descriptionText = formData.get("description") as string | null;
 
     if (!text) {
+        console.error("Error: Text is required");
         throw new Error("Text is required");
     }
 
@@ -22,16 +23,24 @@ export async function addTodo(formData: FormData) {
     }
 
     if (!user) {
+        console.error("Error: User is not logged in");
         throw new Error("User is not logged in");
     }
 
-    const { error } = await supabase.from("todos").insert({
+    console.log("Adding todo:", { text, descriptionText, user_id: user.id });
+
+    const { data, error } = await supabase.from("todos").insert({
         task: text,
         description: descriptionText,
         user_id: user.id
-    });
+    }).select();
 
-    
+    if (error) {
+        console.error("Error inserting todo:", error.message);
+        throw new Error("Error inserting todo");
+    }
+
+    console.log("Inserted todo:", data);
 
     revalidatePath("/todos");
 }
