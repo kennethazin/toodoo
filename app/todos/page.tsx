@@ -1,3 +1,4 @@
+
 import { TodoList } from "@/components/todo-list";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
@@ -16,7 +17,6 @@ export default async function TodosPage() {
   const { data: todos, error } = await supabase
     .from("todos")
     .select()
-    .order("is_complete", { ascending: true })
     .order("inserted_at", { ascending: false });
 
   if (error) {

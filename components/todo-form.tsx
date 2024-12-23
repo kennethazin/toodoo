@@ -13,15 +13,15 @@ function FormContent() {
   const { pending } = useFormStatus();
   return (
     <>
+
       <Input
         disabled={pending}
         minLength={4}
         name="todo"
         required
-        placeholder="Add a new todo"
+        placeholder="Add a new toodoo"
         className="border-none outline-none"
       />
-      <Input  className="border-none outline-none" name="description" placeholder="Add a description" />
       <Button type="submit" size="icon" className="min-w-10" disabled={pending}>
         <Send className="h-3 w-3" />
         <span className="sr-only">Submit Todo</span>
@@ -43,26 +43,21 @@ export function TodoForm({
           ref={formRef}
           className="flex gap-4"
           action={async (data) => {
-            try {
-              const task = data.get("todo") as string;
-              const description = data.get("description") as string || "Default description";
-              console.log("Form data:", { task, description });
+            const task = data.get("todo") as string;
+            const description = data.get("description") as string || "Default description";
+            console.log("Form data:", { task, description });
 
-              const newTodo: Todo = {
-                id: -1,
-                inserted_at: "",
-                user_id: "",
-                task,
-                description,
-                is_complete: false,
-              };
-              console.log("New todo:", newTodo);
-              optimisticUpdate({ action: "create", todo: newTodo });
-              await addTodo(data);
-              formRef.current?.reset();
-            } catch (error) {
-              console.error("Error adding todo:", error);
-            }
+            const newTodo: Todo = {
+              id: -1,
+              inserted_at: "",
+              user_id: "",
+              task,
+              description,
+              is_complete: false,
+            };
+            optimisticUpdate({ action: "create", todo: newTodo });
+            await addTodo(data);
+            formRef.current?.reset();
           }}
         >
           <FormContent />

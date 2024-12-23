@@ -4,27 +4,30 @@ import { Todo } from "@/types/custom";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 
-const supabase = createClient();
-
 export async function addTodo(formData: FormData) {
-    const text = formData.get("todo") as string | null;
-    const descriptionText = formData.get("description") as string | null;
+    const supabase = createClient();
+    const text = formData.get("todo") as string | null
+    const descriptionText = formData.get("description") as string | null
+
 
     if (!text) {
+<<<<<<< HEAD
         console.error("Error: Text is required");
         throw new Error("Text is required");
+=======
+        throw new Error("Text is required")
+>>>>>>> parent of 7102f03 (fixes)
     }
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-    if (userError) {
-        console.error("Error fetching user:", userError.message);
-        throw new Error("Error fetching user");
-    }
+    const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
+<<<<<<< HEAD
         console.error("Error: User is not logged in");
         throw new Error("User is not logged in");
+=======
+        throw new Error("User is not logged in")
+>>>>>>> parent of 7102f03 (fixes)
     }
 
     console.log("Adding todo:", { text, descriptionText, user_id: user.id });
@@ -33,6 +36,7 @@ export async function addTodo(formData: FormData) {
         task: text,
         description: descriptionText,
         user_id: user.id
+<<<<<<< HEAD
     }).select();
 
     if (error) {
@@ -41,21 +45,41 @@ export async function addTodo(formData: FormData) {
     }
 
     console.log("Inserted todo:", data);
+=======
+    })
 
-    revalidatePath("/todos");
+    if (error) {
+        throw new Error("Error adding task")
+    }
+>>>>>>> parent of 7102f03 (fixes)
+
+    revalidatePath("/todos")
 }
 
 export async function deleteTodo(id: number) {
-    const { error } = await supabase.from("todos").delete().eq("id", id);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser()
 
-    if (error) {
-        throw new Error("Error deleting task");
+    if (!user) {
+        throw new Error("User is not logged in")
     }
 
-    revalidatePath("/todos");
+    const { error } = await supabase.from("todos").delete().match({
+        user_id: user.id,
+        id: id
+    })
+
+    if (error) {
+        throw new Error("Error deleting task")
+    }
+
+    revalidatePath("/todos")
 }
 
 export async function updateTodo(todo: Todo) {
+
+
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
